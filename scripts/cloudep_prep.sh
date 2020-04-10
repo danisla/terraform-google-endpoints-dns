@@ -41,7 +41,7 @@ log "INFO" "Enabling Service Management API"
 gcloud services enable servicemanagement.googleapis.com serviceusage.googleapis.com --project ${PROJECT} >&2
 
 log "INFO" "Forcing undelete of Endpoint Service"
-gcloud endpoints services undelete ${ENDPOINT} --project ${PROJECT} >&2 || true
+(gcloud endpoints services undelete ${ENDPOINT} --project ${PROJECT} >&2 || true)
 
 # Output results in JSON format.
 jq -n \
