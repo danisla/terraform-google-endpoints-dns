@@ -13,11 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Extract JSON args into shell variables
-JQ=$(command -v jq || true)
-[[ -z "${JQ}" ]] && echo "ERROR: Missing command: 'jq'" >&2 && exit 1
-
-eval "$(${JQ} -r '@sh "ENDPOINT=\(.endpoint) PROJECT=\(.project)"')"
+[[ -z "$ENDPOINT" ]] && echo "ERROR: Missing 'ENDPOINT' env" >&2 && exit 1
+[[ -z "$GOOGLE_PROJECT" ]] && echo "ERROR: Missing 'GOOGLE_PROJECT' env" >&2 && exit 1
 
 function log() {
     level=$1
@@ -38,13 +35,7 @@ if [[ ! -z ${GOOGLE_CREDENTIALS+x} && ! -z ${GOOGLE_PROJECT+x} ]]; then
 fi
 
 log "INFO" "Enabling Service Management API"
-gcloud services enable servicemanagement.googleapis.com serviceusage.googleapis.com --project ${PROJECT} >&2
+gcloud services enable servicemanagement.googleapis.com serviceusage.googleapis.com --project ${GOOGLE_PROJECT} >&2
 
 log "INFO" "Forcing undelete of Endpoint Service"
-(gcloud endpoints services undelete ${ENDPOINT} --project ${PROJECT} >&2 || true)
-
-# Output results in JSON format.
-jq -n \
-  --arg endpoint "${ENDPOINT}" \
-  --arg project "${PROJECT}" \
-    '{"endpoint":$endpoint, "project":$project}'
+(gcloud endpoints services undelete ${ENDPOINT} --project ${GOOGLE_PROJECT} >&2 || true)

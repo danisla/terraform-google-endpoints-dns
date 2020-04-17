@@ -14,55 +14,11 @@
 
 swagger: "2.0"
 info:
-  description: "wildcard config for any HTTP service."
-  title: "General HTTP Service."
+  description: "Cloud Endpoints DNS"
+  title: "Cloud Endpoints DNS"
   version: "1.0.0"
+paths: {}
 host: "${endpoint_service}"
 x-google-endpoints:
-- name: "${endpoint_service}"
-  target: "${target}"
-basePath: "/"
-consumes:
-- "application/json"
-produces:
-- "application/json"
-schemes:
-- "http"
-- "https"
-paths:
-  "/**":
-    get:
-      operationId: Get
-      responses:
-        '200':
-          description: Get
-        default:
-          description: Error
-    delete:
-      operationId: Delete
-      responses:
-        '204':
-          description: Delete
-        default:
-          description: Error
-    patch:
-      operationId: Patch
-      responses:
-        '200':
-          description: Patch
-        default:
-          description: Error
-    post:
-      operationId: Post
-      responses:
-        '200':
-          description: Post
-        default:
-          description: Error
-    put:
-      operationId: Put
-      responses:
-        '200':
-          description: Put
-        default:
-          description: Error
+  - name: "${endpoint_service}"
+    target: ${target}"

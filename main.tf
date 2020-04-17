@@ -45,14 +45,24 @@ resource "google_project_service" "service-usage" {
 }
 
 // Ensure that the service endpoint has not been deleted by trying to undelete it with gcloud.
-data "external" "module-cloudep-dns-prep" {
-  count   = var.ensure_undelete ? 1 : 0
-  program = ["${path.module}/scripts/cloudep_prep.sh"]
-
-  query = {
-    endpoint = local.service_name
-    project  = local.project
+resource "null_resource" "cloud-ep-dns-prep" {
+  triggers = {
+    project_id = local.project
+    endpoint   = local.service_name
   }
+
+  provisioner "local-exec" {
+    command = "${path.module}/scripts/cloudep_prep.sh"
+    environment = {
+      ENDPOINT       = local.service_name
+      GOOGLE_PROJECT = local.project
+    }
+  }
+
+  depends_on = [
+    google_project_service.endpoints,
+    google_project_service.service-usage,
+  ]
 }
 
 resource "google_endpoints_service" "default" {
@@ -61,8 +71,7 @@ resource "google_endpoints_service" "default" {
   openapi_config = data.template_file.openapi_spec.rendered
 
   depends_on = [
-    google_project_service.endpoints,
-    google_project_service.service-usage,
+    null_resource.cloud-ep-dns-prep
   ]
 }
 
