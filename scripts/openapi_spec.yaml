@@ -21,4 +21,4 @@ paths: {}
 host: "${endpoint_service}"
 x-google-endpoints:
   - name: "${endpoint_service}"
-    target: ${target}"
+    target: "${target}"
